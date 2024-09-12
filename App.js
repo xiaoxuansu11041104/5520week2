@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function App() {
 
   // Declare a constant variable for the app name
-  const appName = "My awesome app";
+  const appName = "My app";
   
   return (
     <View style={styles.container}>
