@@ -16,8 +16,12 @@ export default function Input() {
           value={text}
           onChangeText={updateText}
         />
+
+      {/* Real-time character count */}
+      {text.length > 0 && (
+        <Text>Character count: {text.length}</Text>
+      )}
         
     </View>
   )
 }
-
