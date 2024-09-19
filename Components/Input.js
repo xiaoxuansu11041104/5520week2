@@ -49,36 +49,42 @@ export default function Input({autoFocus, onConfirm, visible}) {
 
     return (
         <Modal
-            visible={visible}
-            animationType="slide"
-            transparent={true} // Use a transparent background to create a modal overlay effect
+          visible={visible}
+          animationType="slide"
+          transparent={true}
         >
-            <View style={styles.modalContainer}>
+          <View style={styles.modalContainer}>
             <View style={styles.inputContainer}>
-                <TextInput
+              <TextInput
                 ref={textInputRef}
                 placeholder="Type something"
                 style={styles.input}
                 value={text}
                 onChangeText={updateText}
-                />
-
-                {/* Button to confirm the input */}
+              />
+    
+              {/* Button to confirm the input */}
+              <View style={styles.buttonContainer}>
                 <Button title="Confirm" onPress={handleConfirm} color="blue" />
+              </View>
             </View>
-            </View>
+          </View>
         </Modal>
-        );
+      );
     }
     
 
     const styles = StyleSheet.create({
+
+        // Styles for the background of the modal
         modalContainer: {
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
           backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add a semi-transparent background
         },
+
+        // Styles for modal content
         inputContainer: {
           width: '80%',
           padding: 20,
@@ -86,12 +92,29 @@ export default function Input({autoFocus, onConfirm, visible}) {
           borderRadius: 10,
           alignItems: 'center',
         },
+
+        // Styles for the input field
         input: {
           borderBottomColor: 'purple',
           borderBottomWidth: 1,
           width: '100%',
           marginBottom: 20,
+          padding: 5,
+          fontSize: 16,
         },
+        button: {
+          width: '30%',
+          backgroundColor: 'blue',
+          padding: 10,
+          marginTop: 10,
+        },
+
+        buttonText: {
+          color: 'white',
+          fontSize: 16,
+          textAlign: 'center',
+        },
+
       });
 
 

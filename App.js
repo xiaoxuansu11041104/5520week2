@@ -29,16 +29,20 @@ export default function App() {
 
       
       <StatusBar style="auto" />
-      <Header name={appName} />
+      
+      {/* Bordered box with text inside */}
+      <View style={styles.textBox}>
+        <Text style={styles.headerText}>Welcome to My awesome app</Text>
+      </View>
       
 
-      {/* Display the user input */}
-      <Text>User input: {userText}</Text>
+
 
       {/* Button to show the modal */}
       <Button 
         title = "Add a goal"
         onPress = {() => setModalVisible(true)}
+        color="blue"
       />
 
       {/* Pass the modal visibility state and onConfirm callback to Input */}
@@ -46,6 +50,9 @@ export default function App() {
         visible={modalVisible}
         onConfirm={handleInputData} 
       />
+
+      {/* Display the user input */}
+      <Text>{userText}</Text>
       
     </View>
   );
@@ -57,5 +64,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  textBox: {
+    borderColor: 'purple',
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+
+  text: {
+    fontSize: 14,
+    marginVertical: 10,
+    textAlign: 'center',
+  },
+
+  buttonContainer: {
+    width: '30%',
+    marginVertical: 10,
   },
 });
