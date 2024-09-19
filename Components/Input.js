@@ -12,6 +12,7 @@ export default function Input({ textInputFocus, inputHandler, modalVisible }) {
     // call the callback fn received from App.js
     // pass what user has typed
     inputHandler(text);
+    setText('');  // Clear the input after confirming
   }
 
   function handleCancel() {
@@ -27,6 +28,7 @@ export default function Input({ textInputFocus, inputHandler, modalVisible }) {
         {
           text: "OK", // Text for the ok button
           onPress: () => {
+            setText(''); // Clear the input after confirming
             onCancel(); // Call the onCancel callback passed from App.js
           },
         },
