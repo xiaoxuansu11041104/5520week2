@@ -46,7 +46,10 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
             source={{
               uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png',
             }}
-            alt= "Target icon" // Alternative text for the image
+
+            // an alternative text description of the image
+            // which will be read by the screen reader when the user interacts with it
+            alt= "Target icon" 
           />
 
           
