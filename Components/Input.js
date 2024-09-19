@@ -1,4 +1,4 @@
-import { Text, View, TextInput } from 'react-native'
+import { Text, View, TextInput, Button, StyleSheet} from 'react-native'
 import React, { useState, useRef, useEffect } from 'react';
 
 export default function Input({autoFocus}) {
@@ -29,6 +29,12 @@ export default function Input({autoFocus}) {
     function handleFocus() {
         setIsFocused(true);
         setShowMessage(false); // Hide the message when the input is focused
+    }
+
+    // Function to handle button press
+    function handleConfirm() {
+        // log the user input
+        console.log('User Input:', text);
     }
 
     // Function to determine the message to display based on input length
@@ -63,7 +69,24 @@ export default function Input({autoFocus}) {
             {getMessage()}
             </Text>
         )}
-        
+
+        {/* Button to confirm the input */}
+        <Button 
+            title="Confirm" 
+            onPress={handleConfirm} 
+            color="blue"
+        />   
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+    input: {
+        borderBottomColor: 'blue',
+        borderBottomWidth: 1,
+        width: 200,
+        marginBottom: 10
+    }
+});
+
+
