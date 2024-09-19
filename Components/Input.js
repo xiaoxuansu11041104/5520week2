@@ -47,11 +47,13 @@ export default function Input({ textInputFocus, inputHandler, modalVisible }) {
               uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png',
             }}
           />
+          <Text style={styles.altText}>Target icon from network</Text>
 
           <Image
             style={styles.image}
             source={require('../assets/2617812.png')}
           />
+          <Text style={styles.altText}>Target icon from local</Text>
 
 
           <TextInput
@@ -134,5 +136,11 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
+  },
+
+  altText: {
+    marginBottom: 10,
+    fontSize: 14,
+    color: 'grey',
   },
 });
