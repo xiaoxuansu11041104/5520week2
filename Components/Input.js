@@ -1,120 +1,117 @@
-import { Text, View, TextInput, Button, StyleSheet, Modal} from 'react-native'
-import React, { useState, useRef, useEffect } from 'react';
+import { Alert, Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState } from "react";
 
-export default function Input({autoFocus, onConfirm, visible}) {
-    const [text, setText] = useState('');
-    const textInputRef = useRef(null); // Reference to manage focus
-    const [isFocused, setIsFocused] = useState(false); // State to track focus
-    const [showMessage, setShowMessage] = useState(false); // State to show message
+export default function Input({ textInputFocus, inputHandler, modalVisible }) {
+  const [text, setText] = useState("");
+  const [blur, setBlur] = useState(false);
 
-    // Set focus on the TextInput when the component mounts if autoFocus is true
-    useEffect(() => {
-    if (autoFocus && textInputRef.current) {
-        textInputRef.current.focus(); // Automatically focus the input if autoFocus is true
-    }
-    }, [autoFocus]);
+  function updateText(changedText) {
+    setText(changedText);
+  }
+  function handleConfirm() {
+    // call the callback fn received from App.js
+    // pass what user has typed
+    inputHandler(text);
+  }
 
+  function handleCancel() {
+    // Show an alert with cancel and ok buttons
+    Alert.alert(
+      "Confirm Cancel", // Title of the alert
+      "Are you sure you want to cancel?", // Message of the alert
+      [
+        {
+          text: "Cancel", // Text for the cancel button
+          style: "cancel", // Style for the cancel button
+        },
+        {
+          text: "OK", // Text for the ok button
+          onPress: () => {
+            onCancel(); // Call the onCancel callback passed from App.js
+          },
+        },
+      ]
+    );
+  }
 
-    function updateText(newText) {
-        setText(newText);
-    }
-
-    // Function to handle when the input loses focus (onBlur)
-    function handleBlur() {
-        setIsFocused(false);
-        setShowMessage(true); // Show message after blur
-    }
-
-    // Function to handle when the input gains focus (onFocus)
-    function handleFocus() {
-        setIsFocused(true);
-        setShowMessage(false); // Hide the message when the input is focused
-    }
-
-    // Function to handle button press
-    function handleConfirm() {
-        if (onConfirm) {
-            onConfirm(text); // Call the onConfirm function with the input text
-        }
-        setText(''); // Clear the input after confirming
-    }
-
-    // Function to determine the message to display based on input length
-    const getMessage = () => {
-        if (text.length >= 3) {
-            return "Thank you";
-        }
-        return "Please type more than 3 characters";
-    };
-
-    return (
-        <Modal
-          visible={visible}
-          animationType="slide"
-          transparent={true}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.inputContainer}>
-              <TextInput
-                ref={textInputRef}
-                placeholder="Type something"
-                style={styles.input}
-                value={text}
-                onChangeText={updateText}
-              />
-    
-              {/* Button to confirm the input */}
-              <View style={styles.buttonContainer}>
-                <Button title="Confirm" onPress={handleConfirm} color="blue" />
-              </View>
+  return (
+    <Modal animationType="slide" visible={modalVisible}>
+      <View style={styles.modalContainer}>
+        <View style={styles.contentContainer}>
+          <TextInput
+            autoFocus={textInputFocus}
+            placeholder="Type something"
+            keyboardType="default"
+            style={styles.input}
+            value={text}
+            onChangeText={updateText}
+            onBlur={() => {
+              setBlur(true);
+            }}
+            onFocus={() => {
+              setBlur(false);
+            }}
+          />
+          {blur ? (
+            text.length >= 3 ? (
+              <Text>Thank you</Text>
+            ) : (
+              <Text>Please type more than 3 characters</Text>
+            )
+          ) : (
+            text && <Text>{text.length}</Text>
+          )}
+          <View style={styles.buttonRow}>
+            <View style={styles.buttonContainer}>
+              <Button title="Confirm" onPress={handleConfirm} />
             </View>
+
+            <View style={styles.buttonContainer}>
+              <Button title="Cancel" onPress={handleCancel} />
+              
+            </View>
+            
           </View>
-        </Modal>
-      );
-    }
-    
 
-    const styles = StyleSheet.create({
+        </View>
+      </View>
+    </Modal>
+  );
+}
 
-        // Styles for the background of the modal
-        modalContainer: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add a semi-transparent background
-        },
+const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background for the modal
+  },
 
-        // Styles for modal content
-        inputContainer: {
-          width: '80%',
-          padding: 20,
-          backgroundColor: 'white',
-          borderRadius: 10,
-          alignItems: 'center',
-        },
+  contentContainer: {
+    width: '60%',
+    padding: 20,
+    backgroundColor: "white", // Background for the content with rounded corners
+    borderRadius: 10,         // Rounded corners
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
-        // Styles for the input field
-        input: {
-          borderBottomColor: 'purple',
-          borderBottomWidth: 1,
-          width: '100%',
-          marginBottom: 20,
-          padding: 5,
-          fontSize: 16,
-        },
-        button: {
-          width: '30%',
-          backgroundColor: 'blue',
-          padding: 10,
-          marginTop: 10,
-        },
+  
+  input: {
+    borderColor: "purple",
+    borderWidth: 2,
+    padding: 5,
+    color: "blue",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginTop: 10,
+  },
 
-        buttonText: {
-          color: 'white',
-          fontSize: 16,
-          textAlign: 'center',
-        },
-
-      });
-
-
+  buttonContainer: {
+    width: "50%",
+    marginVertical: 10,
+  },
+});
