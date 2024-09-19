@@ -1,7 +1,7 @@
 import { Text, View, TextInput, Button, StyleSheet} from 'react-native'
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function Input({autoFocus}) {
+export default function Input({autoFocus, onConfirm}) {
     const [text, setText] = useState('');
     const textInputRef = useRef(null); // Reference to manage focus
     const [isFocused, setIsFocused] = useState(false); // State to track focus
@@ -33,8 +33,9 @@ export default function Input({autoFocus}) {
 
     // Function to handle button press
     function handleConfirm() {
-        // log the user input
-        console.log('User Input:', text);
+        if (onConfirm) {
+            onConfirm(text); // Call the onConfirm function with the input text
+        }
     }
 
     // Function to determine the message to display based on input length
