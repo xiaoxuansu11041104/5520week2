@@ -9,7 +9,7 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
     setText(changedText);
   }
   function handleConfirm() {
-    // call the callback fn received from App.js
+    // Call the inputHandler callback passed from App.js
     // pass what user has typed
     inputHandler(text);
     setText('');  // Clear the input after confirming
@@ -40,20 +40,26 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
     <Modal animationType="slide" visible={modalVisible}>
       <View style={styles.modalContainer}>
         <View style={styles.contentContainer}>
-
+          
           <Image
             style={styles.image}
             source={{
               uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png',
             }}
+            alt= "Target icon" // Alternative text for the image
           />
-          <Text style={styles.altText}>Target icon from network</Text>
+
+          
+
 
           <Image
             style={styles.image}
             source={require('../assets/2617812.png')}
+            alt= "Target icon"
           />
-          <Text style={styles.altText}>Target icon from local</Text>
+
+          
+
 
 
           <TextInput
@@ -81,11 +87,11 @@ export default function Input({ textInputFocus, inputHandler, modalVisible, onCa
           )}
           <View style={styles.buttonRow}>
             <View style={styles.buttonContainer}>
-              <Button title="Confirm" onPress={handleConfirm} />
+              <Button title="Confirm" onPress={handleConfirm} disabled= {text.length < 3} />
             </View>
 
             <View style={styles.buttonContainer}>
-              <Button title="Cancel" onPress={handleCancel} disabled= {text.length < 3}/>
+              <Button title="Cancel" onPress={handleCancel} />
               
             </View>
             
