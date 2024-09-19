@@ -38,6 +38,7 @@ export default function App() {
         textInputFocus={true}
         inputHandler={handleInputData}
         modalVisible={isModalVisible}
+        onCancel={handleCancel}
       />
       <View style={styles.bottomView}>
         <Text style={styles.text}>{receivedData}</Text>

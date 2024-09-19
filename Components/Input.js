@@ -1,7 +1,7 @@
 import { Alert, Button, Modal, StyleSheet, Text, TextInput, View, Image } from "react-native";
 import React, { useState } from "react";
 
-export default function Input({ textInputFocus, inputHandler, modalVisible }) {
+export default function Input({ textInputFocus, inputHandler, modalVisible, onCancel }) {
   const [text, setText] = useState("");
   const [blur, setBlur] = useState(false);
 
