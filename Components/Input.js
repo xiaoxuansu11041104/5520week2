@@ -1,7 +1,7 @@
-import { Text, View, TextInput, Button, StyleSheet} from 'react-native'
+import { Text, View, TextInput, Button, StyleSheet, Modal} from 'react-native'
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function Input({autoFocus, onConfirm}) {
+export default function Input({autoFocus, onConfirm, visible}) {
     const [text, setText] = useState('');
     const textInputRef = useRef(null); // Reference to manage focus
     const [isFocused, setIsFocused] = useState(false); // State to track focus
@@ -36,6 +36,7 @@ export default function Input({autoFocus, onConfirm}) {
         if (onConfirm) {
             onConfirm(text); // Call the onConfirm function with the input text
         }
+        setText(''); // Clear the input after confirming
     }
 
     // Function to determine the message to display based on input length
@@ -46,48 +47,51 @@ export default function Input({autoFocus, onConfirm}) {
         return "Please type more than 3 characters";
     };
 
-  return (
-    <View>
-        <TextInput
-          ref={textInputRef} 
-          placeholder="Type something"
-          keyboardType="default"
-          style={{ borderBottomColor: 'purple', borderBottomWidth: 1, width: 200, marginBottom: 10 }}
-          value={text}
-          onChangeText={updateText}
-          onBlur={handleBlur}
-          onFocus={handleFocus}
-        />
+    return (
+        <Modal
+            visible={visible}
+            animationType="slide"
+            transparent={true} // Use a transparent background to create a modal overlay effect
+        >
+            <View style={styles.modalContainer}>
+            <View style={styles.inputContainer}>
+                <TextInput
+                ref={textInputRef}
+                placeholder="Type something"
+                style={styles.input}
+                value={text}
+                onChangeText={updateText}
+                />
 
-        {/* Real-time character count */}
-        {text.length > 0 && (
-            <Text>Character count: {text.length}</Text>
-        )}
-
-        {/* Display message when the input loses focus */}
-        {showMessage && (
-            <Text style={{ color: text.length >= 3 ? 'green' : 'red' }}>
-            {getMessage()}
-            </Text>
-        )}
-
-        {/* Button to confirm the input */}
-        <Button 
-            title="Confirm" 
-            onPress={handleConfirm} 
-            color="blue"
-        />   
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-    input: {
-        borderBottomColor: 'blue',
-        borderBottomWidth: 1,
-        width: 200,
-        marginBottom: 10
+                {/* Button to confirm the input */}
+                <Button title="Confirm" onPress={handleConfirm} color="blue" />
+            </View>
+            </View>
+        </Modal>
+        );
     }
-});
+    
+
+    const styles = StyleSheet.create({
+        modalContainer: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add a semi-transparent background
+        },
+        inputContainer: {
+          width: '80%',
+          padding: 20,
+          backgroundColor: 'white',
+          borderRadius: 10,
+          alignItems: 'center',
+        },
+        input: {
+          borderBottomColor: 'purple',
+          borderBottomWidth: 1,
+          width: '100%',
+          marginBottom: 20,
+        },
+      });
 
 
