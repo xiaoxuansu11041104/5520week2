@@ -1,4 +1,4 @@
-import { Alert, Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Modal, StyleSheet, Text, TextInput, View, Image } from "react-native";
 import React, { useState } from "react";
 
 export default function Input({ textInputFocus, inputHandler, modalVisible }) {
@@ -40,6 +40,20 @@ export default function Input({ textInputFocus, inputHandler, modalVisible }) {
     <Modal animationType="slide" visible={modalVisible}>
       <View style={styles.modalContainer}>
         <View style={styles.contentContainer}>
+
+          <Image
+            style={styles.image}
+            source={{
+              uri: 'https://cdn-icons-png.flaticon.com/512/2617/2617812.png',
+            }}
+          />
+
+          <Image
+            style={styles.image}
+            source={require('../assets/2617812.png')}
+          />
+
+
           <TextInput
             autoFocus={textInputFocus}
             placeholder="Type something"
@@ -53,7 +67,7 @@ export default function Input({ textInputFocus, inputHandler, modalVisible }) {
             onFocus={() => {
               setBlur(false);
             }}
-          />
+          />  
           {blur ? (
             text.length >= 3 ? (
               <Text>Thank you</Text>
@@ -115,5 +129,10 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: "50%",
     marginVertical: 10,
+  },
+
+  image: {
+    width: 100,
+    height: 100,
   },
 });
