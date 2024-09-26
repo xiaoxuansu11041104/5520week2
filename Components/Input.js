@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     padding: 5,
     color: "blue",
+    marginTop: 10,
   },
   buttonRow: {
     flexDirection: "row",
