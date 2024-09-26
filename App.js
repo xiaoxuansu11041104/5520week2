@@ -53,10 +53,10 @@ export default function App() {
         <FlatList
           contentContainerStyle={styles.ScrollViewContent}
           data={goals}
-          renderItem={(item) => {
+          renderItem={({item}) => {
             console.log(item);
             return (
-              <GoalItem/>
+              <GoalItem goalObj = {item} />
             );
 
           }}/>
@@ -84,20 +84,10 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     justifyContent: "center",
   },
-  text: {
-    color: "purple",
-    marginVertical: 5, 
-    padding: 10,  
-    fontSize: 20,
 
-  },
   topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
   bottomView: { flex: 4, backgroundColor: "#dcd"},
-  textContainer: {
-    backgroundColor: "#f0f0f0",
-    borderRadius: 10,
-    marginTop: 20,
-  },
+
   ScrollViewContent: {
     justifyContent: "center",
     alignItems: "center",
