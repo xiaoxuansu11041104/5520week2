@@ -66,6 +66,13 @@ export default function App() {
             <Text style={styles.emptyText}>No goals to show</Text>
           </View>
         )}  
+        ListHeaderComponent={() => (
+          goals.length > 0 ? (
+            <View style={styles.headerContainer}>
+              <Text style={styles.headerText}>My Goals</Text>
+            </View>
+          ) : null
+        )}  
       />
 
         {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
@@ -107,6 +114,16 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: "red",
+    fontSize: 20,
+  },
+  headerContainer: {
+    backgroundColor: "purple",
+    padding: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+  headerText: {
+    color: "white",
     fontSize: 20,
   },
 });
