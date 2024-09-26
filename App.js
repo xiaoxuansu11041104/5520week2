@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Button, FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
@@ -49,18 +49,28 @@ export default function App() {
         onCancel={handleCancel}
       />
       <View style={styles.bottomView}>
-        <ScrollView contentContainerStyle = {styles.ScrollViewContent}>
-        
-        {goals.map((goalObj) => {
-          return (
-            <View key = {goalObj.id} style= {styles.textContainer}>
-              <Text style={styles.text}>{goalObj.text}</Text>
-            </View>
-          );
+        <FlatList
+          contentContainerStyle={styles.ScrollViewContent}
+          data={goals}
+          renderItem={(receivedData) => {
+            console.log(receivedData);
+            return (
+              <View key={receivedData.item.id} style={styles.textContainer}>
+                <Text style={styles.text}>{receivedData.item.text}</Text>
+              </View>
+            );
 
-        })}
-      
-        </ScrollView>
+          }}/>
+        {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
+          {goals.map((goalObj) => {
+            return (
+              <View key = {goalObj.id} style= {styles.textContainer}>
+                <Text style={styles.text}>{goalObj.text}</Text>
+              </View>
+            );
+
+          })}     
+        </ScrollView> */}
       </View>
 
       
@@ -83,7 +93,7 @@ const styles = StyleSheet.create({
 
   },
   topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
-  bottomView: { flex: 4, backgroundColor: "#dcd", alignItems: "center" },
+  bottomView: { flex: 4, backgroundColor: "#dcd"},
   textContainer: {
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
