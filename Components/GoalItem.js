@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Button } from 'react-native'
 import React from 'react'
 
 export default function GoalItem({goalObj}) {
 
   return (
     <View style={styles.textContainer}>
-    <Text style={styles.text}>{goalObj.text}</Text>
-  </View>
+        <Text style={styles.text}>{goalObj.text}</Text>
+        <Button title= "X" onProgress={() => {}} color = "grey"/>
+    </View>
   )
 }
 
@@ -23,4 +24,5 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 20,
       },
+
 })
