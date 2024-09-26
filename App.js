@@ -55,16 +55,19 @@ export default function App() {
         onCancel={handleCancel}
       />
       <View style={styles.bottomView}>
-        <FlatList
-          contentContainerStyle={styles.ScrollViewContent}
-          data={goals}
-          renderItem={({item}) => {
-            console.log(item);
-            return (
-              <GoalItem goalObj = {item} handleDelete= {goalDeleteHandler}/>
-            );
+      <FlatList
+        contentContainerStyle={styles.ScrollViewContent}
+        data={goals} 
+        renderItem={({ item }) => {
+          return <GoalItem goalObj={item} handleDelete={goalDeleteHandler} />;
+        }}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No goals to show</Text>
+          </View>
+        )}  
+      />
 
-          }}/>
         {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
           {goals.map((goalObj) => {
             return (
@@ -96,5 +99,14 @@ const styles = StyleSheet.create({
   ScrollViewContent: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    color: "red",
+    fontSize: 20,
   },
 });
