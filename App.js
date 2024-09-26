@@ -31,6 +31,11 @@ export default function App() {
 
   } 
 
+  function goalDeleteHandler(goalId){ 
+    console.log("Goal to be deleted: ", goalId);
+
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
@@ -56,7 +61,7 @@ export default function App() {
           renderItem={({item}) => {
             console.log(item);
             return (
-              <GoalItem goalObj = {item} />
+              <GoalItem goalObj = {item} handleDelete= {goalDeleteHandler}/>
             );
 
           }}/>
