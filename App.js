@@ -3,6 +3,7 @@ import { Button, FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } fr
 import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
+import GoalItem from "./Components/GoalItem";
 
 export default function App() {
   const [receivedData, setReceivedData] = useState("");
@@ -52,12 +53,10 @@ export default function App() {
         <FlatList
           contentContainerStyle={styles.ScrollViewContent}
           data={goals}
-          renderItem={(receivedData) => {
-            console.log(receivedData);
+          renderItem={(item) => {
+            console.log(item);
             return (
-              <View key={receivedData.item.id} style={styles.textContainer}>
-                <Text style={styles.text}>{receivedData.item.text}</Text>
-              </View>
+              <GoalItem/>
             );
 
           }}/>
