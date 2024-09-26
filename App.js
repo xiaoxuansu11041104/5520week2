@@ -1,61 +1,83 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, TextInput, View, SafeAreaView } from 'react-native';
-import Header from './Components/Header';
-import Input from './Components/Input';
-import React, { useState } from 'react';
-
+import { StatusBar } from "expo-status-bar";
+import { Button, FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import Header from "./Components/Header";
+import { useState } from "react";
+import Input from "./Components/Input";
+import GoalItem from "./Components/GoalItem";
 
 export default function App() {
+  const [receivedData, setReceivedData] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const appName = "My app";
+  // Add an array to store the goals
+  const [goals, setGoals] = useState([]);
+  //update to receive data
+  function handleInputData(data) {
+    //log the data to console
+    console.log("App ", data);
+    let newGoals = { text: data, id: Math.random() };
+    setGoals((prevGoals)=>{
+      return [...prevGoals, newGoals];
+    });
 
-  // Declare a constant variable for the app name
-  const appName = "My awesome app";
-
-  // Declare a state variable to store the user input
-  const [userText, setUserText] = useState('');
-
-  //  Declare a visible state for the modal
-  const [modalVisible, setModalVisible] = useState(false);
-
-  // Callback function to handle the input data from the Input component
-  function handleInputData(input) {
-    setUserText(input);
-    // Hide the modal after confirming
-    setModalVisible(false);
+    setReceivedData(data);
+    setIsModalVisible(false);
   }
 
-  
+  // Callback function to handle cancel
+  function handleCancel() {
+    // Close the modal after press cancel
+    setIsModalVisible(false);
+
+  } 
+
+  function goalDeleteHandler(goalId){ 
+    console.log("Goal to be deleted: ", goalId);
+
+  }
+
   return (
     <SafeAreaView style={styles.container}>
-
       <StatusBar style="auto" />
-      
-      {/* Top section with header and button */}
-      <View style={styles.topSection}>
-        {/* Bordered box with text inside */}
-        <View style={styles.textBox}>
-          <Text style={styles.headerText}>Welcome to My awesome app</Text>
-        </View>
-
-        {/* Button to show the modal */}
-        <Button 
-          title = "Add a goal"
-          onPress = {() => setModalVisible(true)}
-          color="blue"
+      <View style={styles.topView}>
+        <Header name={appName} />
+        <Button
+          title="Add a Goal"
+          onPress={() => {
+            setIsModalVisible(true);
+          }}
         />
       </View>
+      <Input
+        textInputFocus={true}
+        inputHandler={handleInputData}
+        modalVisible={isModalVisible}
+        onCancel={handleCancel}
+      />
+      <View style={styles.bottomView}>
+        <FlatList
+          contentContainerStyle={styles.ScrollViewContent}
+          data={goals}
+          renderItem={({item}) => {
+            console.log(item);
+            return (
+              <GoalItem goalObj = {item} handleDelete= {goalDeleteHandler}/>
+            );
 
-      {/* Bottom section displaying user input */}
-      <View style={styles.bottomSection}>
-        <Text style={styles.text}>User input: {userText}</Text>
+          }}/>
+        {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
+          {goals.map((goalObj) => {
+            return (
+              <View key = {goalObj.id} style= {styles.textContainer}>
+                <Text style={styles.text}>{goalObj.text}</Text>
+              </View>
+            );
 
+          })}     
+        </ScrollView> */}
       </View>
 
-      {/* Pass the modal visibility state and onConfirm callback to Input */}
-      <Input 
-        visible={modalVisible}
-        onConfirm={handleInputData} 
-      />
-
+      
     </SafeAreaView>
   );
 }
@@ -63,40 +85,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    // alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    // alignItems: "center",
+    justifyContent: "center",
   },
 
-  topSection: {
-    flex: 1,  // 1/5th of the screen
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  bottomSection: {
-    flex: 4,  // 4/5th of the screen
-    backgroundColor: '#D8BFD8',  // Light purple background
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
+  bottomView: { flex: 4, backgroundColor: "#dcd"},
 
-  textBox: {
-    borderColor: 'purple',
-    borderWidth: 2,
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-
-  text: {
-    fontSize: 14,
-    marginVertical: 10,
-    textAlign: 'center',
-  },
-
-  buttonContainer: {
-    width: '30%',
-    marginVertical: 10,
+  ScrollViewContent: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
