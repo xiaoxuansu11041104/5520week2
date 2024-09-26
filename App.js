@@ -100,6 +100,10 @@ export default function App() {
             </View>
           ) : null
         }
+
+        ItemSeparatorComponent={
+          <View style={styles.separator} />
+        }
       />
 
         {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
@@ -152,5 +156,10 @@ const styles = StyleSheet.create({
   headerText: {
     color: "white",
     fontSize: 20,
+  },
+  separator: {
+    height: 5,  // Make separator thicker
+    backgroundColor: "#888",  // Dark gray color to make it visible
+    marginVertical: 10,  // Space between the separator and the items  // Center the separator
   },
 });
