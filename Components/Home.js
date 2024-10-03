@@ -1,145 +1,134 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View, Alert} from "react-native";
+import {
+  Button,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Alert,
+} from "react-native";
 import Header from "./Header";
 import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
-import { NavigationContainer } from '@react-navigation/native';
-import GoalDetails from "./GoalDetails";
 
-export default function Home() {
+
+export default function Home({ navigation }) {
   const [receivedData, setReceivedData] = useState("");
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const appName = "My app";
-  // Add an array to store the goals
+  const [modalVisible, setModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
-  //update to receive data
+  const appName = "My app!";
+  // update to receive data
   function handleInputData(data) {
-    //log the data to console
-    console.log("App ", data);
-    let newGoals = { text: data, id: Math.random() };
-    setGoals((prevGoals)=>{
-      return [...prevGoals, newGoals];
+    console.log("App.js ", data);
+    let newGoal = { text: data, id: Math.random() };
+    //make a new obj and store the received data as the obj's text property
+    setGoals((prevGoals) => {
+      return [...prevGoals, newGoal];
     });
-
-    setReceivedData(data);
-    setIsModalVisible(false);
+    // setReceivedData(data);
+    setModalVisible(false);
   }
-
-  // Callback function to handle cancel
-  function handleCancel() {
-    // Close the modal after press cancel
-    setIsModalVisible(false);
-
-  } 
-
-  function goalDeleteHandler(goalId){ 
-    console.log("Goal to be deleted: ", goalId);
-
+  function dismissModal() {
+    setModalVisible(false);
   }
-
-  // Function to delete all goals
-  function handleDeleteAll() {
+  function handleGoalDelete(deletedId) {
+    setGoals((prevGoals) => {
+      return prevGoals.filter((goalObj) => {
+        return goalObj.id != deletedId;
+      });
+    });
+  }
+  function deleteAllGoals() {
+    // alert the user to confirm the deletion
     Alert.alert(
       "Delete All Goals",
       "Are you sure you want to delete all goals?",
       [
         {
           text: "No",
-          style: "cancel", // No action if the user cancels
+          style: "cancel",
         },
         {
           text: "Yes",
           onPress: () => {
-            setGoals([]); // Clear all goals
+            setGoals([]); // empty the goals array
           },
         },
       ]
     );
   }
 
+  const handleDetailsPress = (goal) => {
+    // Navigate to GoalDetails and pass the goal object
+    navigation.navigate('Details', { goal });
+  };
 
-    // Function to delete a goal
-    function goalDeleteHandler(goalId) {
-        console.log("Goal to be deleted: ", goalId);
-        // Filter out the goal to be deleted
-        setGoals((prevGoals) => {
-            return prevGoals.filter((goal) => goal.id !== goalId);
-        });
-    }
-
-    // Function to 
-    function onDetailsPress(goalId) {
-        console.log("Goal ID:", goalId);
-        navigation.navigate('Details', { goalId: goalId });
-    }
-
-
+  // Custom separator component
+  const renderSeparator = () => {
+    return <View style={styles.separator} />;
+  };
 
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
       <View style={styles.topView}>
-        <Header name={appName} />
+        <Header name={appName}></Header>
         <Button
           title="Add a Goal"
-          onPress={() => {
-            setIsModalVisible(true);
-          }}
+          onPress={() => setModalVisible(true)}
         />
       </View>
       <Input
         textInputFocus={true}
         inputHandler={handleInputData}
-        modalVisible={isModalVisible}
-        onCancel={handleCancel}
+        isModalVisible={modalVisible}
+        dismissModal={dismissModal}
       />
       <View style={styles.bottomView}>
-      <FlatList
-        contentContainerStyle={styles.ScrollViewContent}
-        data={goals} 
-        renderItem={({ item }) => {
-          return <GoalItem goalObj={item} handleDelete={goalDeleteHandler} />;
-        }}
-        ListEmptyComponent={() => (
-          <View style={styles.emptyContainer}>
+        <FlatList
+          contentContainerStyle={styles.scrollViewContainer}
+          data={goals}
+          renderItem={({ item }) => (
+            <GoalItem
+              deleteHandler={handleGoalDelete}
+              goalObj={item}
+              onDetailsPress={handleDetailsPress}
+            />
+          )}
+          ItemSeparatorComponent={renderSeparator}
+          ListEmptyComponent={() => (
             <Text style={styles.emptyText}>No goals to show</Text>
-          </View>
-        )}  
-        ListHeaderComponent={() => (
-          goals.length > 0 ? (
-            <View style={styles.headerContainer}>
-              <Text style={styles.headerText}>My Goals</Text>
-            </View>
-          ) : null
-        )}  
-        ListFooterComponent={() =>
-          goals.length > 0 ? (
-            <View style={styles.footerContainer}>
-              <Button title="Delete All" onPress={handleDeleteAll} color="red" />
-            </View>
-          ) : null
-        }
-
-        ItemSeparatorComponent={
-          <View style={styles.separator} />
-        }
-      />
-
-        {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
+          )}
+          ListHeaderComponent={() =>
+            goals.length > 0 ? (
+              <Text style={styles.headerText}>My goals</Text>
+            ) : null
+          }
+          ListFooterComponent={() =>
+            goals.length > 0 ? (
+              <View style={styles.footerContainer}>
+                <Button
+                  title="Delete All"
+                  onPress={deleteAllGoals}
+                />
+              </View>
+            ) : null
+          }
+        />
+        {/* <ScrollView contentContainerStyle={styles.scrollViewContainer}>
           {goals.map((goalObj) => {
             return (
-              <View key = {goalObj.id} style= {styles.textContainer}>
+              <View key={goalObj.id} style={styles.textContainer}>
                 <Text style={styles.text}>{goalObj.text}</Text>
               </View>
             );
-
-          })}     
+          })}
         </ScrollView> */}
       </View>
-
-      
     </SafeAreaView>
   );
 }
@@ -148,39 +137,43 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center",
     justifyContent: "center",
   },
-
-  topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
-  bottomView: { flex: 4, backgroundColor: "#dcd"},
-
-  ScrollViewContent: {
-    justifyContent: "center",
+  scrollViewContainer: {
     alignItems: "center",
+    paddingHorizontal: 20,
+    width: '100%',
   },
-  emptyContainer: {
+  topView: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  bottomView: { 
+    flex: 4, 
+    backgroundColor: "#dcd",
+    width: "100%",
   },
   emptyText: {
-    color: "red",
-    fontSize: 20,
-  },
-  headerContainer: {
-    backgroundColor: "purple",
-    padding: 10,
-    width: "100%",
-    alignItems: "center",
+    fontSize: 18,
+    color: "purple",
+    marginTop: 20,
+    textAlign: "center",
   },
   headerText: {
-    color: "white",
-    fontSize: 20,
+    fontSize: 18,
+    color: "purple",
+    marginTop: 20,
+    textAlign: "center",
+  },
+  footerContainer: {
+    marginVertical: 20,
+    alignItems: "center",
+    color: "purple",
   },
   separator: {
-    height: 5,  // Make separator thicker
-    backgroundColor: "#888",  // Dark gray color to make it visible
-    marginVertical: 10,  // Space between the separator and the items  // Center the separator
+    height: 4,
+    backgroundColor: "#A9A9A9",
+    marginVertical: 30,
   },
 });
