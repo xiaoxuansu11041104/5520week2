@@ -4,6 +4,7 @@ import Header from "./Components/Header";
 import { useState } from "react";
 import Input from "./Components/Input";
 import GoalItem from "./Components/GoalItem";
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   const [receivedData, setReceivedData] = useState("");
