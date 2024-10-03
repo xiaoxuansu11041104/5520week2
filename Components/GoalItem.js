@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, Button } from 'react-native'
 import React from 'react'
 
-export default function GoalItem({goalObj}) {
+export default function GoalItem({goalObj, handleDelete}) {
 
   return (
     <View style={styles.textContainer}>
         <Text style={styles.text}>{goalObj.text}</Text>
-        <Button title= "X" onProgress={() => {}} color = "grey"/>
+        <Button title= "X" onProgress={() => {handleDelete(goalObj.text)}} color = "grey"/>
     </View>
   )
 }
