@@ -5,6 +5,7 @@ import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import { NavigationContainer } from '@react-navigation/native';
+import GoalDetails from "./GoalDetails";
 
 export default function Home() {
   const [receivedData, setReceivedData] = useState("");
@@ -56,6 +57,25 @@ export default function Home() {
       ]
     );
   }
+
+
+    // Function to delete a goal
+    function goalDeleteHandler(goalId) {
+        console.log("Goal to be deleted: ", goalId);
+        // Filter out the goal to be deleted
+        setGoals((prevGoals) => {
+            return prevGoals.filter((goal) => goal.id !== goalId);
+        });
+    }
+
+    // Function to 
+    function onDetailsPress(goalId) {
+        console.log("Goal ID:", goalId);
+        navigation.navigate('Details', { goalId: goalId });
+    }
+
+
+
 
   return (
     <SafeAreaView style={styles.container}>

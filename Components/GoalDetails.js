@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const GoalDetails = ({ route }) => {
-  const { goal } = route.params;
+const GoalDetails = ({ navigation, route }) => {
+  consolo.log(route);
 
   return (
     <View style={styles.container}>
