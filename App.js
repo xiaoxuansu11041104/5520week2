@@ -23,7 +23,7 @@ export default function App() {
           component={GoalDetails}
           options={({ navigation, route }) => {
             return {
-              title: route.params ? route.params.goalObj.text : "More Details",
+              ...getHeaderOptions(route.params ? route.params.goalObj.text : "More Details"),
               headerRight: () => {
                 return (
                   <Button
