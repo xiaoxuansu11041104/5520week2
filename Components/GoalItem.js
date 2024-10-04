@@ -1,31 +1,39 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, View } from "react-native";
+import React from "react";
 
-const GoalItem = ({ goalObj, deleteHandler, onDetailsPress }) => {
+export default function GoalItem({ goalObj, handleDelete, handlePress }) {
   return (
-    <View style={styles.goalItem}>
-      <Text style={styles.goalText}>{goalObj.text}</Text>
-      <Button title="X" color="grey" onPress={() => deleteHandler(goalObj.id)} />
-      <Button title="i" color="grey" onPress={() => onDetailsPress(goalObj)} />
+    <View style={styles.textContainer}>
+      <Text style={styles.text}>{goalObj.text}</Text>
+      <Button
+        title="X"
+        onPress={() => {
+          handleDelete(goalObj.id);
+        }}
+        color="grey"
+      />
+      <Button
+        title="i"
+        onPress={() => {
+          handlePress(goalObj);
+        }}
+        color="grey"
+      />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  goalItem: {
-    padding: 10,
-    marginVertical: 10,
-    backgroundColor: '#ccc',
-    borderColor: 'black',
-    borderWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  text: {
+    color: "purple",
+    fontSize: 35,
+    padding: 5,
   },
-  goalText: {
-    fontSize: 18,
-    color: 'purple',
+  textContainer: {
+    backgroundColor: "#aaa",
+    borderRadius: 5,
+    marginVertical: 5,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
-
-export default GoalItem;
