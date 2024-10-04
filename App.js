@@ -1,100 +1,44 @@
-import { StatusBar } from "expo-status-bar";
-import { Button, FlatList, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import Header from "./Components/Header";
-import { useState } from "react";
-import Input from "./Components/Input";
-import GoalItem from "./Components/GoalItem";
+import React from "react";
+import Home from "./Components/Home";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import GoalDetails from "./Components/GoalDetails";
+import { Button } from "react-native";
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [receivedData, setReceivedData] = useState("");
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const appName = "My app";
-  // Add an array to store the goals
-  const [goals, setGoals] = useState([]);
-  //update to receive data
-  function handleInputData(data) {
-    //log the data to console
-    console.log("App ", data);
-    let newGoals = { text: data, id: Math.random() };
-    setGoals((prevGoals)=>{
-      return [...prevGoals, newGoals];
-    });
-
-    setReceivedData(data);
-    setIsModalVisible(false);
-  }
-
-  // Callback function to handle cancel
-  function handleCancel() {
-    // Close the modal after press cancel
-    setIsModalVisible(false);
-
-  } 
-
-  function goalDeleteHandler(goalId){ 
-    console.log("Goal to be deleted: ", goalId);
-
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <View style={styles.topView}>
-        <Header name={appName} />
-        <Button
-          title="Add a Goal"
-          onPress={() => {
-            setIsModalVisible(true);
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{
+            title: "All My Goals",
+            headerStyle: { backgroundColor: "purple" },
+            headerTintColor: "white",
           }}
         />
-      </View>
-      <Input
-        textInputFocus={true}
-        inputHandler={handleInputData}
-        modalVisible={isModalVisible}
-        onCancel={handleCancel}
-      />
-      <View style={styles.bottomView}>
-        <FlatList
-          contentContainerStyle={styles.ScrollViewContent}
-          data={goals}
-          renderItem={({item}) => {
-            console.log(item);
-            return (
-              <GoalItem goalObj = {item} handleDelete= {goalDeleteHandler}/>
-            );
-
-          }}/>
-        {/* <ScrollView contentContainerStyle = {styles.ScrollViewContent}>        
-          {goals.map((goalObj) => {
-            return (
-              <View key = {goalObj.id} style= {styles.textContainer}>
-                <Text style={styles.text}>{goalObj.text}</Text>
-              </View>
-            );
-
-          })}     
-        </ScrollView> */}
-      </View>
-
-      
-    </SafeAreaView>
+        <Stack.Screen
+          name="Details"
+          component={GoalDetails}
+          options={({ navigation, route }) => {
+            return {
+              title: route.params ? route.params.goalObj.text : "More Details",
+              headerRight: () => {
+                return (
+                  <Button
+                    title="Warning"
+                    onPress={() => {
+                      console.log("warning");
+                    }}
+                  />
+                );
+              },
+            };
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    // alignItems: "center",
-    justifyContent: "center",
-  },
-
-  topView: { flex: 1, alignItems: "center", justifyContent: "space-evenly" },
-  bottomView: { flex: 4, backgroundColor: "#dcd"},
-
-  ScrollViewContent: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
