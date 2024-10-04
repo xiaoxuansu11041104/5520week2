@@ -106,7 +106,7 @@ export default function Home({ navigation }) {
               <GoalItem
                 goalObj={item}
                 handleDelete={goalDeleteHandler}
-                handlePress={goalPressHandler}
+                navigation={navigation} //passing navigation to GoalItem
               />
             );
           }}
