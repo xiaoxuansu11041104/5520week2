@@ -67,7 +67,6 @@ export default function Home({ navigation }) {
       <StatusBar style="auto" />
       <View style={styles.topView}>
         <Header name={appName} />
-        
         <Button
           title="Add a Goal"
           onPress={() => {
