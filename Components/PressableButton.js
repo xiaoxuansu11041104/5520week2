@@ -4,14 +4,20 @@ import React, { Children } from 'react'
 export default function PressableButton({
     children, 
     pressedFunction, 
-    conponentStyle,
+    componentStyle,
     pressedstyle,
 }) {
   return (
     <Pressable 
         onPress={pressedFunction}
         style={({pressed}) => {
-            return [componentStyle, pressed & pressedstyle]
+            return [
+                styles.defaultStyle, 
+                componentStyle, 
+                pressed && styles.defaultPressedStyle, 
+                pressed && pressedstyle
+
+            ];
         }}
     
     >        
@@ -20,4 +26,14 @@ export default function PressableButton({
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    defaultStyle: {
+        backgroundColor: "beige",
+    },
+    defaultPressedStyle: {
+        backgroundColor: "blue",
+        opacity: 0.5,
+    }
+
+
+})
