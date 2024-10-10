@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import GoalDetails from "./Components/GoalDetails";
 import { Button } from "react-native";
 const Stack = createNativeStackNavigator();
+import { getHeaderOptions } from "./Components/HeaderOptions";
 
 export default function App() {
   return (
@@ -13,18 +14,16 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{
-            title: "All My Goals",
-            headerStyle: { backgroundColor: "purple" },
-            headerTintColor: "white",
-          }}
+          options={
+            getHeaderOptions("All My Goals")            
+          }
         />
         <Stack.Screen
           name="Details"
           component={GoalDetails}
           options={({ navigation, route }) => {
             return {
-              title: route.params ? route.params.goalObj.text : "More Details",
+              ...getHeaderOptions(route.params ? route.params.goalObj.text : "More Details"),
               headerRight: () => {
                 return (
                   <Button

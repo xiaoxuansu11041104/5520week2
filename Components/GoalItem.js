@@ -1,7 +1,7 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-export default function GoalItem({ goalObj, handleDelete, handlePress }) {
+export default function GoalItem({ goalObj, handleDelete, navigation }) {
   return (
     <View style={styles.textContainer}>
       <Text style={styles.text}>{goalObj.text}</Text>
@@ -15,7 +15,8 @@ export default function GoalItem({ goalObj, handleDelete, handlePress }) {
       <Button
         title="i"
         onPress={() => {
-          handlePress(goalObj);
+          // Navigation to the details page
+          navigation.navigate("Details", { goalObj });
         }}
         color="grey"
       />

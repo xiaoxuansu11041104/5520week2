@@ -1,12 +1,29 @@
 import { Button, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState, useEffect }from "react";
 
 export default function GoalDetails({ navigation, route }) {
+  // State to hold the warning status
+  const [isWarning, setIsWarning] = useState(false);
   console.log(route);
+  // Function to handle the button press
+  const handleWarningPress = () => {
+    setIsWarning(true); // Set warning state to true
+    navigation.setOptions({ title: "Warning!" }); // Change the header title to "Warning!"
+  };
+    // UseEffect to change the header title based on the warning status
+    useEffect(() => {
+        navigation.setOptions({
+          headerRight: () => (
+            <Button title="Warning" onPress={handleWarningPress} />
+          ),
+        });
+      }, [navigation]);
+    
+
   return (
-    <View>
+    <View style={styles.container}>
       {route.params ? (
-        <Text>
+        <Text style={[styles.text, isWarning && { color: "red" }]}>
           Details of {route.params.goalObj.text} goal with
           {route.params.goalObj.id}
         </Text>
@@ -23,4 +40,14 @@ export default function GoalDetails({ navigation, route }) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      text: {
+        fontSize: 20,
+        color: "black", // Default text color
+      },
+});
