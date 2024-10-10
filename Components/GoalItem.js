@@ -1,26 +1,30 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 export default function GoalItem({ goalObj, handleDelete, navigation }) {
   return (
-    <View style={styles.textContainer}>
-      <Text style={styles.text}>{goalObj.text}</Text>
-      <Button
-        title="X"
-        onPress={() => {
-          handleDelete(goalObj.id);
-        }}
-        color="grey"
-      />
-      <Button
-        title="i"
-        onPress={() => {
-          // Navigation to the details page
-          navigation.navigate("Details", { goalObj });
-        }}
-        color="grey"
-      />
-    </View>
+    
+    <Pressable
+      onPress={() => {
+        // Navigate to the details page when pressed
+        navigation.navigate("Details", { goalObj });
+      }}
+      style={({ pressed }) => [
+        styles.textContainer,
+        pressed && { backgroundColor: "#ddd" }, // Optional pressed effect
+      ]}
+    >
+      <View style={styles.textContainer}>
+        <Text style={styles.text}>{goalObj.text}</Text>
+        <Button
+          title="X"
+          onPress={() => {
+            handleDelete(goalObj.id);
+          }}
+          color="grey"
+        />
+      </View>
+    </Pressable>
   );
 }
 
