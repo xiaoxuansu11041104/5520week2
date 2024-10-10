@@ -9,10 +9,11 @@ export default function GoalItem({ goalObj, handleDelete, navigation }) {
         // Navigate to the details page when pressed
         navigation.navigate("Details", { goalObj });
       }}
-      style={({ pressed }) => [
-        styles.textContainer,
-        pressed && { backgroundColor: "#ddd" }, // Optional pressed effect
-      ]}
+      android_ripple={{
+        color: "red", // Color of the ripple effect
+        borderless: false, // Determines if the ripple can extend beyond the bounds
+      }}
+      style={styles.pressableContainer}
     >
       <View style={styles.textContainer}>
         <Text style={styles.text}>{goalObj.text}</Text>
@@ -40,5 +41,8 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     flexDirection: "row",
     alignItems: "center",
+  },
+  pressableContainer: {
+    borderRadius: 5,
   },
 });
