@@ -67,14 +67,7 @@ export default function Home({ navigation }) {
       <StatusBar style="auto" />
       <View style={styles.topView}>
         <Header name={appName} />
-        <PressableButton
-          pressedHandler={function () {
-            setModalVisible(true);
-          }}
-          componentStyle={{ backgroundColor: "purple" }}
-        >
-          <Text style={styles.buttonText}>Add a Goal</Text>
-        </PressableButton>
+        
         <Button
           title="Add a Goal"
           onPress={() => {

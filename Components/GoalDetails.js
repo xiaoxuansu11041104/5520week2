@@ -12,12 +12,20 @@ export default function GoalDetails({ navigation, route }) {
   };
     // UseEffect to change the header title based on the warning status
     useEffect(() => {
-        navigation.setOptions({
-          headerRight: () => (
-            <Button title="Warning" onPress={handleWarningPress} />
-          ),
-        });
-      }, [navigation]);
+      navigation.setOptions({
+        headerRight: () => {
+          return (
+            // <Button title="Warning" color="white" onPress={warningHandler} />
+            <PressableButton
+              pressedFunction={warningHandler}
+              componentStyle={{ backgroundColor: "purple" }}
+            >
+              <AntDesign name="warning" size={24} color="white" />
+            </PressableButton>
+          );
+        },
+      });
+    }, []);
     
 
   return (
