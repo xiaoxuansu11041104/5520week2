@@ -14,6 +14,7 @@ import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 
+
 export default function Home({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
@@ -102,7 +103,7 @@ export default function Home({ navigation }) {
           )}
           contentContainerStyle={styles.scrollViewContent}
           data={goals}
-          renderItem={({ item }) => {
+          renderItem={({ item, separators}) => {
             return (
               <GoalItem
                 goalObj={item}
