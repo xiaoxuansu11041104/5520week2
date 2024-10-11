@@ -92,14 +92,14 @@ export default function Home({ navigation }) {
           ListFooterComponent={
             goals.length && <Button title="Delete all" onPress={deleteAll} />
           }
-          ItemSeparatorComponent={
+          ItemSeparatorComponent={({ highlighted }) => (
             <View
-              style={{
-                height: 5,
-                backgroundColor: "gray",
-              }}
+              style={[
+                styles.separator,
+                highlighted && styles.highlightedSeparator,
+              ]}
             />
-          }
+          )}
           contentContainerStyle={styles.scrollViewContent}
           data={goals}
           renderItem={({ item }) => {
@@ -108,6 +108,7 @@ export default function Home({ navigation }) {
                 goalObj={item}
                 handleDelete={goalDeleteHandler}
                 navigation={navigation} //passing navigation to GoalItem
+                separators={separators}
               />
             );
           }}
@@ -144,5 +145,12 @@ const styles = StyleSheet.create({
 
   scrollViewContent: {
     alignItems: "center",
+  },
+  separator: {
+    height: 5,
+    backgroundColor: "gray", // Default separator color
+  },
+  highlightedSeparator: {
+    backgroundColor: "blue", // Color when item is pressed
   },
 });

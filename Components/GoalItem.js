@@ -1,4 +1,4 @@
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { Button, Pressable, StyleSheet, Text, View, Alert } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import PressableButton from "./PressableButton";
@@ -32,6 +32,8 @@ export default function GoalItem({ goalObj, handleDelete }) {
         style={({ pressed }) => {
           return [styles.horizontalContainer, pressed && styles.pressedStyle];
         }}
+        onPressIn={() => separators.highlight()} // Highlight the separator
+        onPressOut={() => separators.unhighlight()} // Unhighlight the separator
         onPress={() => {
           // handlePress(goalObj);
           navigation.navigate("Details", { goalObj });
