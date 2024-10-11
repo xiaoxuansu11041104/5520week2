@@ -6,6 +6,25 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 export default function GoalItem({ goalObj, handleDelete }) {
   const navigation = useNavigation();
 
+  // Function to handle the long press and show alert
+  const handleLongPress = () => {
+    Alert.alert(
+      "Delete Goal",
+      `Are you sure you want to delete the goal: "${goalObj.text}"?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => handleDelete(goalObj.id), // Calls handleDelete if confirmed
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
   return (
     <View style={styles.textContainer}>
       <Pressable
