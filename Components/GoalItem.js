@@ -36,6 +36,7 @@ export default function GoalItem({ goalObj, handleDelete }) {
           // handlePress(goalObj);
           navigation.navigate("Details", { goalObj });
         }}
+        onLongPress={handleLongPress} // Long press to trigger alert
       >
         <Text style={styles.text}>{goalObj.text}</Text>
         <PressableButton
