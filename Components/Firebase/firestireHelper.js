@@ -1,4 +1,10 @@
-import { collection, addDoc } from "firebase/firestore"; 
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+} from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
 

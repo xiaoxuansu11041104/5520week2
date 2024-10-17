@@ -23,6 +23,7 @@ import { deleteFromDB } from "./Firebase/firestireHelper";
 
 
 
+
 export default function Home({ navigation }) {
   console.log(app);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -39,7 +40,10 @@ export default function Home({ navigation }) {
       });
       setGoals(newArray);
     });
-  }, []);
+    return () => {
+      unsubscribe();
+    };
+  }, [collectionName]);
   
   
 
