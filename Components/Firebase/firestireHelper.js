@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  updateDoc,
 } from "firebase/firestore";
 import { database } from "./firebaseSetup";
 
