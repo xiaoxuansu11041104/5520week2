@@ -14,6 +14,7 @@ import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 import app from "../App";
+import { writeToDB } from "./Firebase/firestireHelper";
 
 
 export default function Home({ navigation }) {
@@ -21,12 +22,20 @@ export default function Home({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
   const appName = "My app";
+  const collectionName = "goals";
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
     console.log("App ", data);
     // declare a JS object
-    let newGoal = { text: data, id: Math.random() };
+    let newGoal = { text: data };
+    // add the newGoal to db
+    // call writeTo DB function
+    const docRef = writeToDB(newGoal, collectionName);
+    console.log(docRef);
+
+
+
     // update the goals array to have newGoal as an item
     //async
     setGoals((prevGoals) => {
