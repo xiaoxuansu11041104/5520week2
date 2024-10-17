@@ -14,7 +14,7 @@ import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 import app from "../App";
-import { writeToDB } from "./Firebase/firestireHelper";
+import { deleteAllFromDB, writeToDB } from "./Firebase/firestireHelper";
 import { onSnapshot } from "firebase/firestore";
 import {useEffect} from "react";
 import { collection } from "./Firebase/firebaseSetup";
@@ -88,7 +88,8 @@ export default function Home({ navigation }) {
       {
         text: "Yes",
         onPress: () => {
-          setGoals([]);
+          // setGoals([]);
+          deleteAllFromDB(collectionName);
         },
       },
       { text: "No", style: "cancel" },
