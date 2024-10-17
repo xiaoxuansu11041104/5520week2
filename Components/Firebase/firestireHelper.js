@@ -36,3 +36,15 @@ export async function deleteAllFromDB(collectionName) {
     console.log("delete all ", err);
   }
 }
+
+export async function setGoalWarning(goalId) {
+  try {
+    const goalRef = doc(database, "goals", goalId); // Get a reference to the specific document
+    await updateDoc(goalRef, {
+      warning: true, // Add or update the warning field
+    });
+    console.log(`Goal with ID ${goalId} updated with warning: true`);
+  } catch (error) {
+    console.error("Error updating goal with warning: ", error);
+  }
+}
