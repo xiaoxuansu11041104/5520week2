@@ -15,6 +15,9 @@ import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 import app from "../App";
 import { writeToDB } from "./Firebase/firestireHelper";
+import { onSnapshot } from "firebase/firestore";
+import {useEffect} from "react";
+import { collection } from "./Firebase/firebaseSetup";
 
 
 export default function Home({ navigation }) {
@@ -23,6 +26,22 @@ export default function Home({ navigation }) {
   const [goals, setGoals] = useState([]);
   const appName = "My app";
   const collectionName = "goals";
+  
+
+  useEffect(() => {
+    onSnapshot(collection(database, collectionName), (querySnapshot) => {
+      let newArray = [];
+      querySnapshot.forEach((docSnapshot) => {
+        newArray.push({ docSnapshot.data(), id: docSnapshot.id });
+        console.log(docSnapshot.id);
+      });
+      console.setGoals(newArray);
+    });
+  }, []);
+  
+  
+
+
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
@@ -38,9 +57,9 @@ export default function Home({ navigation }) {
 
     // update the goals array to have newGoal as an item
     //async
-    setGoals((prevGoals) => {
-      return [...prevGoals, newGoal];
-    });
+    //setGoals((prevGoals) => {
+    //  return [...prevGoals, newGoal];
+    //});
     //updated goals is not accessible here
     setIsModalVisible(false);
   }
@@ -143,9 +162,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center",
+    // alignItems: "center"
     justifyContent: "center",
   },
+
   header: {
     color: "indigo",
     fontSize: 25,
@@ -166,3 +186,4 @@ const styles = StyleSheet.create({
     backgroundColor: "blue", // Color when item is pressed
   },
 });
+
