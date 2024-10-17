@@ -13,22 +13,54 @@ import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
+import app from "../App";
+import { deleteAllFromDB, writeToDB } from "./Firebase/firestireHelper";
+import { onSnapshot } from "firebase/firestore";
+import {useEffect} from "react";
+import { collection } from "./Firebase/firebaseSetup";
+import { database } from "./Firebase/firebaseSetup";
+
+
 
 export default function Home({ navigation }) {
+  console.log(app);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
   const appName = "My app";
+  const collectionName = "goals";
+  
+
+  useEffect(() => {
+    onSnapshot(collection(database, collectionName), (querySnapshot) => {
+      let newArray = [];
+      querySnapshot.forEach((docSnapshot) => {
+        newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
+      });
+      setGoals(newArray);
+    });
+  }, []);
+  
+  
+
+
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
     console.log("App ", data);
     // declare a JS object
-    let newGoal = { text: data, id: Math.random() };
+    let newGoal = { text: data };
+    // add the newGoal to db
+    // call writeTo DB function
+    const docRef = writeToDB(newGoal, collectionName);
+    console.log(docRef);
+
+
+
     // update the goals array to have newGoal as an item
     //async
-    setGoals((prevGoals) => {
-      return [...prevGoals, newGoal];
-    });
+    //setGoals((prevGoals) => {
+    //  return [...prevGoals, newGoal];
+    //});
     //updated goals is not accessible here
     setIsModalVisible(false);
   }
@@ -44,19 +76,20 @@ export default function Home({ navigation }) {
   function goalDeleteHandler(deletedId) {
     console.log("goal deleted ", deletedId);
     //Use array.filter to update the array by removing the deletedId
-
-    setGoals((prevGoals) => {
-      return prevGoals.filter((goal) => {
-        return goal.id != deletedId;
-      });
-    });
+    deleteFromDB(deletedId, collectionName);
+    //setGoals((prevGoals) => {
+    //  return prevGoals.filter((goal) => {
+    //    return goal.id != deletedId;
+    //  });
+    //});
   }
   function deleteAll() {
     Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
       {
         text: "Yes",
         onPress: () => {
-          setGoals([]);
+          // setGoals([]);
+          deleteAllFromDB(collectionName);
         },
       },
       { text: "No", style: "cancel" },
@@ -92,22 +125,23 @@ export default function Home({ navigation }) {
           ListFooterComponent={
             goals.length && <Button title="Delete all" onPress={deleteAll} />
           }
-          ItemSeparatorComponent={
+          ItemSeparatorComponent={({ highlighted }) => (
             <View
-              style={{
-                height: 5,
-                backgroundColor: "gray",
-              }}
+              style={[
+                styles.separator,
+                highlighted && styles.highlightedSeparator,
+              ]}
             />
-          }
+          )}
           contentContainerStyle={styles.scrollViewContent}
           data={goals}
-          renderItem={({ item }) => {
+          renderItem={({ item, separators}) => {
             return (
               <GoalItem
                 goalObj={item}
                 handleDelete={goalDeleteHandler}
                 navigation={navigation} //passing navigation to GoalItem
+                separators={separators}
               />
             );
           }}
@@ -130,9 +164,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center",
+    // alignItems: "center"
     justifyContent: "center",
   },
+
   header: {
     color: "indigo",
     fontSize: 25,
@@ -145,4 +180,12 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     alignItems: "center",
   },
+  separator: {
+    height: 5,
+    backgroundColor: "gray", // Default separator color
+  },
+  highlightedSeparator: {
+    backgroundColor: "blue", // Color when item is pressed
+  },
 });
+
