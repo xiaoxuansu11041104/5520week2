@@ -18,6 +18,8 @@ import { writeToDB } from "./Firebase/firestireHelper";
 import { onSnapshot } from "firebase/firestore";
 import {useEffect} from "react";
 import { collection } from "./Firebase/firebaseSetup";
+import { database } from "./Firebase/firebaseSetup";
+
 
 
 export default function Home({ navigation }) {
@@ -32,10 +34,9 @@ export default function Home({ navigation }) {
     onSnapshot(collection(database, collectionName), (querySnapshot) => {
       let newArray = [];
       querySnapshot.forEach((docSnapshot) => {
-        newArray.push({ docSnapshot.data(), id: docSnapshot.id });
-        console.log(docSnapshot.id);
+        newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
       });
-      console.setGoals(newArray);
+      setGoals(newArray);
     });
   }, []);
   
@@ -75,12 +76,12 @@ export default function Home({ navigation }) {
   function goalDeleteHandler(deletedId) {
     console.log("goal deleted ", deletedId);
     //Use array.filter to update the array by removing the deletedId
-
-    setGoals((prevGoals) => {
-      return prevGoals.filter((goal) => {
-        return goal.id != deletedId;
-      });
-    });
+    deleteFromDB(deletedId, collectionName);
+    //setGoals((prevGoals) => {
+    //  return prevGoals.filter((goal) => {
+    //    return goal.id != deletedId;
+    //  });
+    //});
   }
   function deleteAll() {
     Alert.alert("Delete All", "Are you sure you want to delete all goals?", [

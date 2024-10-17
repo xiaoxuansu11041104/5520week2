@@ -19,3 +19,14 @@ export async function deleteFromDB(deletedId, collectionName) {
   }
 }
 
+export async function deleteAllFromDB(collectionName) {
+  try {
+    //get all the documents in the collection
+    const querySnapshot = await getDocs(collection(database, collectionName));
+    querySnapshot.forEach((docSnapshot) => {
+      deleteDoc(doc(database, collectionName, docSnapshot.id));
+    });
+  } catch (err) {
+    console.log("delete all ", err);
+  }
+}
