@@ -15,10 +15,11 @@ import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
 import app from "../App";
 import { deleteAllFromDB, writeToDB } from "./Firebase/firestireHelper";
-import { onSnapshot } from "firebase/firestore";
+
 import {useEffect} from "react";
-import { collection } from "./Firebase/firebaseSetup";
+import { collection, onSnapshot } from "firebase/firestore";
 import { database } from "./Firebase/firebaseSetup";
+import { deleteFromDB } from "./Firebase/firestireHelper";
 
 
 
