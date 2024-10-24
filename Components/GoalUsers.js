@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import React from 'react'
 import { useEffect, useState } from 'react'
+import { writeToDB } from './Firebase/firestireHelper'
 
 
-export default function GoalUsers() {
+export default function GoalUsers({id}) {
   const [users, setUsers] = useState([])
+  
   useEffect(() => {
     async function fetchData() {
       try {
@@ -21,7 +23,9 @@ export default function GoalUsers() {
         
 
         const data = await response.json();
-        
+        // Write data to firestore using writeToDB function
+        data.forEach((user) => writeToDB(user, `goals/${id}/users`));
+
         // Call the json method on the response to get JSON
         setUsers(
           data.map((user) => {
