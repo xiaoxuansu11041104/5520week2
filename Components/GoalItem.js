@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import PressableButton from "./PressableButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import {GoalUsers.js} from "./GoalUsers.js"
+import {GoalUsers} from "./GoalUsers.js"
 
 export default function GoalItem({ goalObj, handleDelete, separators }) {
   const navigation = useNavigation();
