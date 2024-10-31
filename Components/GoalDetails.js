@@ -1,27 +1,17 @@
-import { Button, StyleSheet, Text, View, Pressable } from "react-native";
+import { Button, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import PressableButton from "./PressableButton";
-import { setGoalWarning } from "./Firebase/firestireHelper";
+import { updateDB } from "./Firebase/firestoreHelper";
 import GoalUsers from "./GoalUsers";
 
 export default function GoalDetails({ navigation, route }) {
   const [warning, setWarning] = useState(false);
-  async function warningHandler() {
+  function warningHandler() {
     setWarning(true);
     navigation.setOptions({ title: "Warning!" });
-    try {
-      if (route.params?.goalObj?.id) {
-        await setGoalWarning(route.params.goalObj.id); // Update Firestore with warning: true
-        console.log("Firestore updated with warning!");
-      } else {
-        console.log("Goal ID not available.");
-      }
-    } catch (error) {
-      console.error("Error setting warning in Firestore: ", error);
-    }
+    updateDB(route.params.goalObj.id, { warning: true }, "goals");
   }
-  
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
@@ -53,7 +43,7 @@ export default function GoalDetails({ navigation, route }) {
           navigation.push("Details");
         }}
       />
-      <GoalUsers />
+      {route.params && <GoalUsers goalId={route.params.goalObj.id} />}
     </View>
   );
 }

@@ -1,47 +1,51 @@
-import { StyleSheet, Text, View, FlatList } from 'react-native'
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { writeToDB } from './Firebase/firestireHelper'
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { readAllDocs, writeToDB } from "./Firebase/firestoreHelper";
 
-
-export default function GoalUsers({id}) {
-  const [users, setUsers] = useState([])
-  
+export default function GoalUsers({ goalId }) {
+  const [users, setUsers] = useState([]);
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(
-          "https://jsonplaceholder.typicode.com/users/"
-        );
-
-
-        if (!response.ok) {
-          throw new Error(
-            `An HTTP error happened with status: ${response.status}`
+        // check if there is any data in users subcollection
+        const dataFromDB = await readAllDocs(`goals/${goalId}/users`);
+        if (dataFromDB.length) {
+          // if there is call setUsers with that data
+          console.log("data from DB");
+          setUsers(
+            dataFromDB.map((user) => {
+              return user.name;
+            })
           );
+          return;
         }
-        
+        // if not then proceed with fetching from fake API
+        console.log("data from API");
 
+        const response = await fetch(
+          "https://jsonplaceholder.typicode.com/users"
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error happened with status ${response.status}`);
+        }
+        // We only get here if the response.ok is true. let's extract data
         const data = await response.json();
-        // Write data to firestore using writeToDB function
-        data.forEach((user) => writeToDB(user, `goals/${id}/users`));
-
-        // Call the json method on the response to get JSON
+        // write data to firestore using writeToDB
+        data.forEach((user) => {
+          writeToDB(user, `goals/${goalId}/users`);
+        });
         setUsers(
           data.map((user) => {
             return user.name;
           })
         );
-        // set the users state variable from the data
+        // setUsers(data);
       } catch (err) {
-        console.log("fetch user data ", err);
+        console.log("fetch users data ", err);
       }
-           
     }
- 
     fetchData();
-  }, [])
-
+  }, []);
   return (
     <View>
       <FlatList
@@ -51,7 +55,7 @@ export default function GoalUsers({id}) {
         }}
       />
     </View>
-  )
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
