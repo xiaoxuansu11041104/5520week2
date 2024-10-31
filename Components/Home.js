@@ -9,40 +9,42 @@ import {
   View,
 } from "react-native";
 import Header from "./Header";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import app from "../App";
-import { deleteAllFromDB, writeToDB } from "./Firebase/firestireHelper";
-import { onSnapshot } from "firebase/firestore";
-import {useEffect} from "react";
-import { collection } from "./Firebase/firebaseSetup";
 import { database } from "./Firebase/firebaseSetup";
-
-
+import {
+  deleteAllFromDB,
+  deleteFromDB,
+  writeToDB,
+} from "./Firebase/firestoreHelper";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function Home({ navigation }) {
-  console.log(app);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [goals, setGoals] = useState([]);
   const appName = "My app";
   const collectionName = "goals";
-  
-
   useEffect(() => {
-    onSnapshot(collection(database, collectionName), (querySnapshot) => {
-      let newArray = [];
-      querySnapshot.forEach((docSnapshot) => {
-        newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
-      });
-      setGoals(newArray);
-    });
+    //querySnapshot is a list/array of documentSnapshots
+    const unsubscribe = onSnapshot(
+      collection(database, collectionName),
+      (querySnapshot) => {
+        //define an array
+        let newArray = [];
+        querySnapshot.forEach((docSnapshot) => {
+          //populate the array
+          newArray.push({ ...docSnapshot.data(), id: docSnapshot.id });
+          console.log(docSnapshot.id);
+        });
+        console.log(newArray);
+        //setGoals with this array
+        setGoals(newArray);
+      }
+    );
+    return () => unsubscribe();
   }, []);
-  
-  
-
-
   //update this fn to receive data
   function handleInputData(data) {
     //log the data to console
@@ -50,17 +52,15 @@ export default function Home({ navigation }) {
     // declare a JS object
     let newGoal = { text: data };
     // add the newGoal to db
-    // call writeTo DB function
-    const docRef = writeToDB(newGoal, collectionName);
-    console.log(docRef);
-
-
+    //call writeToDB
+    writeToDB(newGoal, collectionName);
 
     // update the goals array to have newGoal as an item
     //async
-    //setGoals((prevGoals) => {
-    //  return [...prevGoals, newGoal];
-    //});
+
+    // setGoals((prevGoals) => {
+    //   return [...prevGoals, newGoal];
+    // });
     //updated goals is not accessible here
     setIsModalVisible(false);
   }
@@ -68,20 +68,20 @@ export default function Home({ navigation }) {
     setIsModalVisible(false);
   }
 
-  function goalPressHandler(pressedGoal) {
-    //which goal?
-    console.log("goal pressed");
-    navigation.navigate("Details", { goalObj: pressedGoal });
-  }
+  // function goalPressHandler(pressedGoal) {
+  //   //which goal?
+  //   console.log("goal pressed");
+  //   navigation.navigate("Details", { goalObj: pressedGoal });
+  // }
   function goalDeleteHandler(deletedId) {
     console.log("goal deleted ", deletedId);
     //Use array.filter to update the array by removing the deletedId
     deleteFromDB(deletedId, collectionName);
-    //setGoals((prevGoals) => {
-    //  return prevGoals.filter((goal) => {
-    //    return goal.id != deletedId;
-    //  });
-    //});
+    // setGoals((prevGoals) => {
+    //   return prevGoals.filter((goal) => {
+    //     return goal.id != deletedId;
+    //   });
+    // });
   }
   function deleteAll() {
     Alert.alert("Delete All", "Are you sure you want to delete all goals?", [
@@ -101,12 +101,20 @@ export default function Home({ navigation }) {
       <StatusBar style="auto" />
       <View style={styles.topView}>
         <Header name={appName} />
-        <Button
+        <PressableButton
+          pressedFunction={() => {
+            setIsModalVisible(true);
+          }}
+          componentStyle={{ backgroundColor: "purple" }}
+        >
+          <Text style={styles.buttonText}>Add a Goal</Text>
+        </PressableButton>
+        {/* <Button
           title="Add a Goal"
           onPress={() => {
             setIsModalVisible(true);
           }}
-        />
+        /> */}
       </View>
       <Input
         textInputFocus={true}
@@ -125,23 +133,25 @@ export default function Home({ navigation }) {
           ListFooterComponent={
             goals.length && <Button title="Delete all" onPress={deleteAll} />
           }
-          ItemSeparatorComponent={({ highlighted }) => (
-            <View
-              style={[
-                styles.separator,
-                highlighted && styles.highlightedSeparator,
-              ]}
-            />
-          )}
+          ItemSeparatorComponent={({ highlighted }) => {
+            return (
+              <View
+                style={{
+                  height: 5,
+                  backgroundColor: highlighted ? "purple" : "gray",
+                }}
+              />
+            );
+          }}
           contentContainerStyle={styles.scrollViewContent}
           data={goals}
-          renderItem={({ item, separators}) => {
+          renderItem={({ item, separators }) => {
             return (
               <GoalItem
+                separators={separators}
                 goalObj={item}
                 handleDelete={goalDeleteHandler}
-                navigation={navigation} //passing navigation to GoalItem
-                separators={separators}
+                // handlePress={goalPressHandler}
               />
             );
           }}
@@ -164,10 +174,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center"
+    // alignItems: "center",
     justifyContent: "center",
   },
-
   header: {
     color: "indigo",
     fontSize: 25,
@@ -180,12 +189,9 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     alignItems: "center",
   },
-  separator: {
-    height: 5,
-    backgroundColor: "gray", // Default separator color
-  },
-  highlightedSeparator: {
-    backgroundColor: "blue", // Color when item is pressed
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    padding: 5,
   },
 });
-
