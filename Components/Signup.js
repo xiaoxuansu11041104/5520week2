@@ -1,7 +1,7 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
-import {auth} from "./Firebase/firebaseSetup";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase/firebaseSetup";
 
 export default function Signup({ navigation }) {
   const [email, setEmail] = useState("");
@@ -9,35 +9,39 @@ export default function Signup({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const loginHandler = () => {
-    //Go to login
+    // go to login
     navigation.replace("Login");
   };
   const signupHandler = async () => {
-    // do some data validation
-    // No field should be empty
-    // Validate email address @.
     try {
+      // do some data validation
+      // no field should be empty
+      // valid email address @ .
+      // password and confirm password match
+      if (password !== confirmPassword) {
+        Alert.alert("Password and confirm password should match");
+        return;
+      }
       if (
         email.length === 0 ||
         password.length === 0 ||
         confirmPassword.length === 0
       ) {
-        Alert.alert("All fields should be provided");
+        Alert.alert("No field should be empty");
         return;
       }
-      if (password !== confirmPassword) {
-        Alert.alert("password and confirm password don't match");
-        return;
-      }
-      // validate email
       const userCred = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log(userCred.user);
+      console.log(userCred);
     } catch (err) {
-      console.log("sign up ", err);
+      console.log("Sign up ", err.code);
+      // tell user if an error happens
+      if (err.code === "auth/weak-password") {
+        Alert.alert("Your password should be at least    6 characters");
+      }
       Alert.alert(err.message);
     }
   };

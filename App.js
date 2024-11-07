@@ -6,35 +6,36 @@ import GoalDetails from "./Components/GoalDetails";
 import { Button } from "react-native";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
-import { auth } from "./Firebase/firebaseSetup";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "./Firebase/firebaseSetup";
 import Profile from "./Components/Profile";
 import PressableButton from "./Components/PressableButton";
+const Stack = createNativeStackNavigator();
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-const Stack = createNativeStackNavigator();
-
-const authStack = (
+const AuthStack = (
   <>
-    <Stack.Screen name="Signup" component={Signup} />
     <Stack.Screen name="Login" component={Login} />
+    <Stack.Screen name="Signup" component={Signup} />
   </>
 );
-const appStack = (
+
+const AppStack = (
   <>
     <Stack.Screen
       name="Home"
       component={Home}
       options={({ navigation }) => {
         return {
-          title: "My Goals",
+          title: "All My Goals",
           headerRight: () => {
+            // render a button icon to navigate to Profile
             return (
               <PressableButton
-                componentStyle={{ backgroundColor: "purple" }}
-                pressedHandler={() => {
+                pressedFunction={() => {
                   navigation.navigate("Profile");
                 }}
+                componentStyle={{ backgroundColor: "purple" }}
               >
                 <AntDesign name="user" size={24} color="white" />
               </PressableButton>
@@ -46,9 +47,9 @@ const appStack = (
     <Stack.Screen
       name="Details"
       component={GoalDetails}
-      options={({ route }) => {
+      options={({ navigation, route }) => {
         return {
-          title: route.params ? route.params.goalData.text : "More Details",
+          title: route.params ? route.params.goalObj.text : "More Details",
           // headerRight: () => {
           //   return (
           //     <Button
@@ -65,44 +66,61 @@ const appStack = (
     <Stack.Screen
       name="Profile"
       component={Profile}
-      options={{
-        headerRight: () => {
-          return (
-            <PressableButton
-              componentStyle={{ backgroundColor: "purple" }}
-              pressedHandler={() => {
-                signOut(auth);
-              }}
-            >
-              <AntDesign name="logout" size={24} color="white" />
-            </PressableButton>
-          );
-        },
+      options={({ navigation }) => {
+        return {
+          headerRight: () => {
+            // render a button icon to navigate to Profile
+            return (
+              <PressableButton
+                pressedFunction={() => {
+                  try {
+                    signOut(auth);
+                  } catch (err) {
+                    console.log("sign out ", err);
+                  }
+                }}
+                componentStyle={{ backgroundColor: "purple" }}
+              >
+                <AntDesign name="logout" size={24} color="white" />
+              </PressableButton>
+            );
+          },
+        };
       }}
     />
   </>
 );
 export default function App() {
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUserLoggedIn, SetIsUserLoggedIn] = useState(false);
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    //set up auth listener
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      console.log("listener ", user);
+      // if user is not logged in we receive null
+      // else we receive user data
       if (user) {
-        setIsUserLoggedIn(true);
+        SetIsUserLoggedIn(true);
       } else {
-        setIsUserLoggedIn(false);
+        SetIsUserLoggedIn(false);
       }
-      //based on the user variable, set the state variable isUserLoggedIn
     });
+    return () => {
+      unsubscribe();
+    };
   }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator
+        initialRouteName="Signup"
         screenOptions={{
           headerStyle: { backgroundColor: "purple" },
           headerTintColor: "white",
         }}
       >
-        {isUserLoggedIn ? appStack : authStack}
+        {
+          // if user is not logged in show them AuthStack else show them AppStack
+          isUserLoggedIn ? AppStack : AuthStack
+        }
       </Stack.Navigator>
     </NavigationContainer>
   );
