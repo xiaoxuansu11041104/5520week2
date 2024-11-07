@@ -13,12 +13,12 @@ import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database } from "./Firebase/firebaseSetup";
+import { database } from "../Firebase/firebaseSetup";
 import {
   deleteAllFromDB,
   deleteFromDB,
   writeToDB,
-} from "./Firebase/firestoreHelper";
+} from "../Firebase/firestoreHelper";
 import { collection, onSnapshot } from "firebase/firestore";
 
 export default function Home({ navigation }) {
