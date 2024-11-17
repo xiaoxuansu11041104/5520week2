@@ -13,13 +13,14 @@ import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database } from "../Firebase/firebaseSetup";
+import { auth, database, storage } from "../Firebase/firebaseSetup";
 import {
   deleteAllFromDB,
   deleteFromDB,
   writeToDB,
 } from "../Firebase/firestoreHelper";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { ref, uploadBytesResumable } from "firebase/storage";
 
 export default function Home({ navigation }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -29,7 +30,10 @@ export default function Home({ navigation }) {
   useEffect(() => {
     //querySnapshot is a list/array of documentSnapshots
     const unsubscribe = onSnapshot(
-      collection(database, collectionName),
+      query(
+        collection(database, collectionName),
+        where("owner", "==", auth.currentUser.uid)
+      ),
       (querySnapshot) => {
         //define an array
         let newArray = [];
@@ -41,28 +45,64 @@ export default function Home({ navigation }) {
         console.log(newArray);
         //setGoals with this array
         setGoals(newArray);
+      },
+      (error) => {
+        console.log("on snapshot ", error);
+        Alert.alert(error.message);
       }
     );
     return () => unsubscribe();
   }, []);
+  async function handleImageData(uri) {
+    try {
+      let uploadURl = "";
+      //fetch the image data
+      const response = await fetch(uri);
+      if (!response.ok) {
+        throw new Error(`fetch error happened with status ${response.status}`);
+      }
+      const blob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+      const imageRef = ref(storage, `images/${imageName}`);
+      const uploadResult = await uploadBytesResumable(imageRef, blob);
+      uploadURl = uploadResult.metadata.fullPath;
+      return uploadURl;
+    } catch (err) {
+      console.log("handle Image data ", err);
+    }
+  }
   //update this fn to receive data
-  function handleInputData(data) {
-    //log the data to console
-    console.log("App ", data);
-    // declare a JS object
-    let newGoal = { text: data };
-    // add the newGoal to db
-    //call writeToDB
-    writeToDB(newGoal, collectionName);
+  //data is an object with text and imageUri properties
+  async function handleInputData(data) {
+    try {
+      //log the data to console
+      console.log("App ", data);
+      let imageUri = "";
+      if (data.imageUri) {
+        imageUri = await handleImageData(data.imageUri);
+      }
+      // declare a JS object
+      let newGoal = { text: data.text };
+      newGoal = { ...newGoal, owner: auth.currentUser.uid };
+      if (imageUri) {
+        newGoal = { ...newGoal, imageUri: imageUri };
+      }
+      console.log(newGoal);
+      // add the newGoal to db
+      //call writeToDB
+      writeToDB(newGoal, collectionName);
 
-    // update the goals array to have newGoal as an item
-    //async
+      // update the goals array to have newGoal as an item
+      //async
 
-    // setGoals((prevGoals) => {
-    //   return [...prevGoals, newGoal];
-    // });
-    //updated goals is not accessible here
-    setIsModalVisible(false);
+      // setGoals((prevGoals) => {
+      //   return [...prevGoals, newGoal];
+      // });
+      //updated goals is not accessible here
+      setIsModalVisible(false);
+    } catch (err) {
+      console.log("handle input data ", err);
+    }
   }
   function dismissModal() {
     setIsModalVisible(false);

@@ -1,12 +1,15 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import PressableButton from "./PressableButton";
 import { updateDB } from "../Firebase/firestoreHelper";
 import GoalUsers from "./GoalUsers";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "../Firebase/firebaseSetup";
 
 export default function GoalDetails({ navigation, route }) {
   const [warning, setWarning] = useState(false);
+  const [downloadImageURL, setDownloadImageURL] = useState("");
   function warningHandler() {
     setWarning(true);
     navigation.setOptions({ title: "Warning!" });
@@ -27,6 +30,21 @@ export default function GoalDetails({ navigation, route }) {
       },
     });
   }, []);
+  useEffect(() => {
+    async function getImageDownloadURL() {
+      try {
+        if (route.params && route.params.goalObj.imageUri) {
+          const imageRef = ref(storage, route.params.goalObj.imageUri);
+          const downloadURL = await getDownloadURL(imageRef);
+          console.log(downloadURL);
+          setDownloadImageURL(downloadURL);
+        }
+      } catch (err) {
+        console.log("get download image URL ", err);
+      }
+    }
+    getImageDownloadURL();
+  }, []);
   return (
     <View>
       {route.params ? (
@@ -44,6 +62,13 @@ export default function GoalDetails({ navigation, route }) {
         }}
       />
       {route.params && <GoalUsers goalId={route.params.goalObj.id} />}
+      {downloadImageURL && (
+        <Image
+          source={{ uri: downloadImageURL }}
+          style={styles.image}
+          alt="preview of goal image"
+        />
+      )}
     </View>
   );
 }
@@ -52,4 +77,5 @@ const styles = StyleSheet.create({
   warningStyle: {
     color: "red",
   },
+  image: { height: 100, width: 100 },
 });
