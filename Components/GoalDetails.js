@@ -4,6 +4,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import PressableButton from "./PressableButton";
 import { updateDB } from "../Firebase/firestoreHelper";
 import GoalUsers from "./GoalUsers";
+import { ref } from "firebase/database";
 
 export default function GoalDetails({ navigation, route }) {
   const [warning, setWarning] = useState(false);
@@ -27,6 +28,14 @@ export default function GoalDetails({ navigation, route }) {
       },
     });
   }, []);
+
+useEffect(() => {
+  if (route.params && route.params.goalObj.imageUri) {
+    const imageRef = ref(storage, route.params.goalObj.imageUri);
+    const downloadURL = await getDownloadURL(imageRef);
+  }
+});
+
   return (
     <View>
       {route.params ? (
